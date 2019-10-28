@@ -25,7 +25,7 @@
     <Authors>Tom Waddell</Authors>
     <Copyright>Copyright (C) 2019</Copyright>
 
-    <PackageTags>MessagePack;MsgPack;LanguageExt;Serialize;Serialization;C#;Formatter;Resolver;Visual Studio;.NET;Framework</PackageTags>
+    <PackageTags>MessagePack;MsgPack;LanguageExt;Serialize;Serialization;C#;Formatter;Resolver;</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

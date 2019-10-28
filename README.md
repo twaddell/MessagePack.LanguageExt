@@ -1,3 +1,7 @@
+
+
+![GitHub](https://img.shields.io/github/license/twaddell/MessagePack.LanguageExt)
+[![NuGet version (MessagePack.LanguageExt)](https://img.shields.io/nuget/v/MessagePack.LanguageExt.svg)](https://www.nuget.org/packages/MessagePack.LanguageExt/)
 [![Build status](https://ci.appveyor.com/api/projects/status/wxvtr0nr1y2lhsoh/branch/master?svg=true)](https://ci.appveyor.com/project/twaddell/messagepack-languageext/branch/master)
 
 # MessagePack.LanguageExt
