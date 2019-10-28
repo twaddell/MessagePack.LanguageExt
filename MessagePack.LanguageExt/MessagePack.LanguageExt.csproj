@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>MessagePack.LanguageExt</RootNamespace>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <ApplicationIcon />
+    <Win32Resource />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+
+    <PackageId>MessagePack.LanguageExt</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+
+    <PackageProjectUrl>https://github.com/twaddell/MessagePack.LanguageExt</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/twaddell/MessagePack.LanguageExt/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <RepositoryUrl>https://github.com/twaddell/MessagePack.LanguageExt</RepositoryUrl>
+
+    <Title>MessagePack.LanguageExt</Title>
+    <Description>This library adds support for LanguageExt types to MessagePack C#.</Description>
+    <Authors>Tom Waddell</Authors>
+    <Copyright>Copyright (C) 2019</Copyright>
+
+    <PackageTags>MessagePack;MsgPack;LanguageExt;Serialize;Serialization;C#;Formatter;Resolver;Visual Studio;.NET;Framework</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MessagePack" Version="1.8.74" />
+    <PackageReference Include="LanguageExt.Core" Version="3.3.29" />
+  </ItemGroup>
+</Project>
