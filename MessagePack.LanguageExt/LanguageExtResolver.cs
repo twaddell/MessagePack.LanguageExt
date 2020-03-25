@@ -45,6 +45,7 @@ namespace MessagePack.LanguageExt
             { typeof(HashMap<,>), typeof(HashMapFormatter<,>) },
             { typeof(Either<,>), typeof(EitherFormatter<,>) },
             { typeof(Option<>), typeof(OptionFormatter<>) },
+            { typeof(NewType<,>), typeof(NewTypeFormatter<,>) },
         };
 
         internal static object GetFormatter(Type t)
