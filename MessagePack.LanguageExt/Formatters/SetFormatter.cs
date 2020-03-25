@@ -5,7 +5,7 @@ namespace MessagePack.LanguageExt
 {
     public class SetFormatter<T> : CollectionFormatterBase<T, T[], Set<T>>
     {
-        protected override void Add(T[] collection, int index, T value)
+        protected override void Add(T[] collection, int index, T value, MessagePackSerializerOptions options)
         {
             collection[index] = value;
         }
@@ -15,7 +15,7 @@ namespace MessagePack.LanguageExt
             return new Set<T>(intermediateCollection);
         }
 
-        protected override T[] Create(int count)
+        protected override T[] Create(int count, MessagePackSerializerOptions options)
         {
             return new T[count];
         }

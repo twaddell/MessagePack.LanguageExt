@@ -5,7 +5,7 @@ namespace MessagePack.LanguageExt
 {
     public class StckFormatter<T> : CollectionFormatterBase<T, T[], Stck<T>>
     {
-        protected override void Add(T[] collection, int index, T value)
+        protected override void Add(T[] collection, int index, T value, MessagePackSerializerOptions options)
         {
             collection[collection.Length - index - 1] = value;
         }
@@ -15,7 +15,7 @@ namespace MessagePack.LanguageExt
             return new Stck<T>(intermediateCollection);
         }
 
-        protected override T[] Create(int count)
+        protected override T[] Create(int count, MessagePackSerializerOptions options)
         {
             return new T[count];
         }

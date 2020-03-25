@@ -14,14 +14,21 @@ namespace MessagePack.LanguageExt.UnitTests
         [AssemblyInitialize()]
         public static void AssemblyInitialize(TestContext testContext)
         {
-            CompositeResolver.RegisterAndSetAsDefault(
+            var standardResolver = CompositeResolver.Create(
                 BuiltinResolver.Instance,
                 LanguageExtResolver.Instance,
                 ContractlessStandardResolver.Instance);
 
-            MessagePackSerializer.Typeless.RegisterDefaultResolver(
+            MessagePackSerializer.DefaultOptions = ContractlessStandardResolver.Options
+                                                                               .WithResolver(standardResolver);
+
+            var typelessResolver = CompositeResolver.Create(
                 LanguageExtResolver.Instance,
-                TypelessContractlessStandardResolver.Instance);
+                TypelessContractlessStandardResolver.Instance
+            );
+
+            MessagePackSerializer.Typeless.DefaultOptions = TypelessContractlessStandardResolver.Options
+                                                                                                .WithResolver(typelessResolver);
 
             initialized = true;
         }
