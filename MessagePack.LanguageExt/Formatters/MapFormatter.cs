@@ -8,7 +8,7 @@ namespace MessagePack.LanguageExt
 {
     public class MapFormatter<TKey, TValue> : CollectionFormatterBase<(TKey, TValue), (TKey, TValue)[], Map<TKey, TValue>>
     {
-        protected override void Add((TKey, TValue)[] collection, int index, (TKey, TValue) value)
+        protected override void Add((TKey, TValue)[] collection, int index, (TKey, TValue) value, MessagePackSerializerOptions options)
         {
             collection[index] = value;
         }
@@ -18,7 +18,7 @@ namespace MessagePack.LanguageExt
             return new Map<TKey, TValue>(intermediateCollection);
         }
 
-        protected override (TKey, TValue)[] Create(int count)
+        protected override (TKey, TValue)[] Create(int count, MessagePackSerializerOptions options)
         {
             return new (TKey, TValue)[count];
         }
