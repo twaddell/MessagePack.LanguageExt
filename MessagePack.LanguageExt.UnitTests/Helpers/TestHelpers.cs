@@ -9,14 +9,14 @@ namespace MessagePack.LanguageExt.UnitTests.Helpers
         public static T Convert<T>(T value)
         {
             var data = MessagePackSerializer.Serialize(value);
-            Console.WriteLine(MessagePackSerializer.ToJson(data));
+            Console.WriteLine(MessagePackSerializer.ConvertToJson(data));
             return MessagePackSerializer.Deserialize<T>(data);
         }
 
         public static T TypelessConvert<T>(T value)
         {
             var data = MessagePackSerializer.Typeless.Serialize(value);
-            Console.WriteLine(MessagePackSerializer.ToJson(data));
+            Console.WriteLine(MessagePackSerializer.ConvertToJson(data));
             return (T)MessagePackSerializer.Typeless.Deserialize(data);
         }
     }

@@ -17,7 +17,7 @@ This library adds support for LanguageExt types to MessagePack C#
 
 This library is provided in NuGet.
 
-Support for .NET Framework 4.6 and .NET Standard 2.0.
+Support for .NET Framework 4.6.1 and .NET Standard 2.0.
 
 In the Package Manager Console -
 ```
@@ -28,11 +28,13 @@ or download directly from NuGet.
 ## How to use
 To use the LanguageExt resolver, you will have to add it to the composite resolver, as shown in the example below:
 ```csharp
- CompositeResolver.RegisterAndSetAsDefault(
+var resolver = CompositeResolver.Create(
             BuiltinResolver.Instance,
             LanguageExtResolver.Instance,
             ContractlessStandardResolver.Instance
             );
+			
+MessagePackSerializer.DefaultOptions = ContractlessStandardResolver.Options.WithResolver(resolver);  
 ```
 ## Quick Start
 For more information on either MessagePack or LanguageExt, please follow the respective links below. 
