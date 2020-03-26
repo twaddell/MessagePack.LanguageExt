@@ -20,10 +20,8 @@ namespace MessagePack.LanguageExt.UnitTests
             var actual = MessagePackSerializer.ConvertToJson(data);
             Assert.AreEqual(expected, actual);
         }
-        
     }
 
-    [MessagePackFormatter(typeof(NewTypeFormatter<CustomIntType, int>))]
     public class CustomIntType : NewType<CustomIntType, int> {
         public CustomIntType(int value) : base(value) { }
         public CustomIntType(SerializationInfo info, StreamingContext context) : base(info, context) { }

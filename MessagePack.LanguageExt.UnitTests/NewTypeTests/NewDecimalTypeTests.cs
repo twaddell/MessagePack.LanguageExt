@@ -23,7 +23,6 @@ namespace MessagePack.LanguageExt.UnitTests
         
     }
 
-    [MessagePackFormatter(typeof(NewTypeFormatter<CustomDecimalType, decimal>))]
     public class CustomDecimalType : NewType<CustomDecimalType, decimal> {
         public CustomDecimalType(decimal value) : base(value) { }
         public CustomDecimalType(SerializationInfo info, StreamingContext context) : base(info, context) { }

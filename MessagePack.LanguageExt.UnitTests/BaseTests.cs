@@ -1,13 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MessagePack.Formatters;
-using MessagePack.Resolvers;
-using MessagePack.LanguageExt;
-using LanguageExt;
 using MessagePack.LanguageExt.UnitTests.Helpers;
 
 namespace MessagePack.LanguageExt.UnitTests

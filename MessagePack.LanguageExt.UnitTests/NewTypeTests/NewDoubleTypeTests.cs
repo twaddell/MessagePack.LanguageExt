@@ -23,7 +23,6 @@ namespace MessagePack.LanguageExt.UnitTests
         
     }
 
-    [MessagePackFormatter(typeof(NewTypeFormatter<CustomDoubleType, double>))]
     public class CustomDoubleType : NewType<CustomDoubleType, double> {
         public CustomDoubleType(double value) : base(value) { }
         public CustomDoubleType(SerializationInfo info, StreamingContext context) : base(info, context) { }
