@@ -65,6 +65,14 @@ namespace MessagePack.LanguageExt
                     return CreateInstance(formatterType, ti.GenericTypeArguments);
                 }
             }
+            else if (ti.BaseType?.IsGenericType ?? false)
+            {
+                Type genericType = ti.BaseType.GetGenericTypeDefinition();
+                if (genericType == typeof(NewType<,>))
+                {
+                    return CreateInstance(typeof(NewTypeFormatter<,>), ti.BaseType.GenericTypeArguments);
+                }
+            }
 
             return null;
         }

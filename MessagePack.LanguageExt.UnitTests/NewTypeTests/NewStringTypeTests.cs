@@ -23,7 +23,6 @@ namespace MessagePack.LanguageExt.UnitTests
         
     }
 
-    [MessagePackFormatter(typeof(NewTypeFormatter<NewStringType, string>))]
     public class NewStringType : NewType<NewStringType, string> {
         public NewStringType(string value) : base(value) { }
         public NewStringType(SerializationInfo info, StreamingContext context) : base(info, context) { }
