@@ -29,7 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MessagePack" Version="2.5.187" />
-    <PackageReference Include="LanguageExt.Core" Version="4.0.3" />
+    <PackageReference Include="MessagePack" Version="2.5.192" />
+    <PackageReference Include="LanguageExt.Core" Version="4.2.9" />
   </ItemGroup>
 </Project>
