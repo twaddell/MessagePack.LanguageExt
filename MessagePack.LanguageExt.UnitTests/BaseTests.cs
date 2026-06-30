@@ -18,7 +18,7 @@ namespace MessagePack.LanguageExt.UnitTests
         }
 
         [TestMethod]
-        public void ItShouldSerializeAndDeserializeUsingTypelesssResolver()
+        public void ItShouldSerializeAndDeserializeUsingTypelessResolver()
         {
             var a = CreateDataType();
             var actual = TestHelpers.TypelessConvert(a);
