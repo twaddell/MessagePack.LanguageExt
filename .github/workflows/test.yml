@@ -1,0 +1,82 @@
+name: 'Test'
+
+# Reusable workflow: restores, builds and tests the solution, collecting code
+# coverage and publishing a summary + HTML report as workflow artifacts. Runs on
+# Windows because the tests also target net48.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Version to stamp onto the build (e.g. 1.2.3)"
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        env:
+          VERSION_ARG: ${{ inputs.version }}
+        run: |
+          if [ -n "$VERSION_ARG" ]; then
+            dotnet build --no-restore --configuration Release -p:Version="$VERSION_ARG"
+          else
+            dotnet build --no-restore --configuration Release
+          fi
+
+      # No LogFileName: each target framework needs its own results file
+      - name: Test with coverage
+        run: >
+          dotnet test --no-build --configuration Release
+          --logger trx
+          --collect:"XPlat Code Coverage"
+          --results-directory ./TestResults
+
+      - name: Install ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Generate coverage report
+        run: |
+          reportgenerator \
+            "-reports:./TestResults/**/coverage.cobertura.xml" \
+            -targetdir:./CoverageReport \
+            "-reporttypes:Html;MarkdownSummaryGithub"
+
+      - name: Publish coverage summary
+        if: always()
+        run: cat ./CoverageReport/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results
+          path: ./TestResults/**/*.trx
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: ./CoverageReport

@@ -1,0 +1,26 @@
+name: 'Semver Label'
+
+# Required check on PRs to main. The release picks the next version from
+# these labels, so every PR must carry exactly one of them. `edited` covers a
+# PR being retargeted to main.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, labeled, unlabeled, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  semver-label:
+    name: 'semver label'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check for exactly one semver label
+        env:
+          # Security: label names passed through env: to prevent script injection
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: node .github/scripts/semver-label-check.mjs

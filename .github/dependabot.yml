@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Security updates only, as before. The label satisfies the required semver check.
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    labels:
+      - dependencies
+      - .NET
+      - semver:patch
