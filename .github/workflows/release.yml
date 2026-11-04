@@ -1,0 +1,132 @@
+name: 'Release Pipeline'
+
+# Every push to main is a reviewed, squash-merged PR, and it's released: the
+# version comes from the PRs' semver labels, the package is pushed to nuget.org,
+# and the commit is tagged with a GitHub Release.
+on:
+  push:
+    branches: [main]
+
+# GitHub keeps only the newest pending run; that's safe because the version
+# takes the labels of every PR merged since the last tag.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    name: 'version'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      version: ${{ steps.next.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 'lts/*'
+
+      - name: Compute the next version
+        id: next
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node .github/scripts/next-version.mjs
+
+  test:
+    needs: version
+    uses: ./.github/workflows/test.yml
+    with:
+      version: ${{ needs.version.outputs.version }}
+
+  # A job in this file, not a reusable workflow: nuget.org's Trusted Publishing
+  # policy names release.yml, and is matched against the file that runs this job.
+  publish:
+    name: 'publish'
+    needs: [version, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Pack
+        run: dotnet pack MessagePack.LanguageExt/MessagePack.LanguageExt.csproj --configuration Release -p:Version="$VERSION" --output ./artifacts
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget-package
+          path: ./artifacts/*.nupkg
+
+      # Exchanges this job's OIDC token for a short-lived nuget.org API key
+      - name: Log in to nuget.org
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      # Last, and without --skip-duplicate: if an earlier run published this version
+      # but wasn't tagged, the next run computes the same version and must fail here
+      # rather than tag a different commit with it.
+      - name: Push to nuget.org
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "./artifacts/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "$NUGET_API_KEY"
+
+  # Last, so a failure here leaves the package published but untagged; re-run
+  # only this job.
+  release:
+    name: 'release'
+    needs: [version, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: nuget-package
+          path: artifacts
+
+      # Re-runnable: gh creates a draft, uploads the package and then publishes, so a
+      # failed run can leave a draft (or a release missing its package). Resume it,
+      # as long as it's for this commit.
+      - name: Tag and publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if target=$(gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" --json targetCommitish --jq .targetCommitish 2>/dev/null); then
+            if [ "$target" != "$GITHUB_SHA" ]; then
+              echo "::error::Release $VERSION already exists for $target, not $GITHUB_SHA."
+              exit 1
+            fi
+            gh release upload "$VERSION" artifacts/*.nupkg --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$VERSION" --repo "$GITHUB_REPOSITORY" --draft=false
+          else
+            gh release create "$VERSION" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "$VERSION" \
+              --generate-notes \
+              artifacts/*.nupkg
+          fi

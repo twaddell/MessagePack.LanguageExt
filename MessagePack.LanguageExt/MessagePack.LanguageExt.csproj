@@ -13,7 +13,6 @@
     <StartupObject />
 
     <PackageId>MessagePack.LanguageExt</PackageId>
-    <PackageVersion>3.0.0</PackageVersion>
 
     <PackageProjectUrl>https://github.com/twaddell/MessagePack.LanguageExt</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/twaddell/MessagePack.LanguageExt/blob/master/LICENSE</PackageLicenseUrl>

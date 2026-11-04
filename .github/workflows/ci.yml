@@ -1,0 +1,41 @@
+name: 'CI'
+
+# Runs on every PR to main. Merging to main releases, so these checks are the gate.
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+
+  scripts:
+    name: 'scripts'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 'lts/*'
+
+      - name: Test pipeline scripts
+        run: node --test ".github/scripts/*.test.mjs"
+
+  # Not a required check: catches workflow mistakes before they reach the release path.
+  actionlint:
+    name: 'actionlint'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      # rhysd/actionlint:1.7.7
+      - name: Lint workflows
+        uses: docker://rhysd/actionlint@sha256:887a259a5a534f3c4f36cb02dca341673c6089431057242cdc931e9f133147e9
+        with:
+          args: -color
